@@ -1,0 +1,8 @@
+body {
+    background-color: dimgray;
+
+}
+.container{
+    margin-top: 9.5rem !important;
+    max-width: 400px !important;
+}
