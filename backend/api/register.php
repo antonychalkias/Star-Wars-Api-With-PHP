@@ -9,30 +9,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    // Check if the username or email is already taken
+
     $checkQuery = "SELECT * FROM users WHERE username='$username' OR email='$email'";
     $checkResult = $conn->query($checkQuery);
 
     if ($checkResult->num_rows > 0) {
-        // Username or email already exists
+
         echo json_encode(["status" => "error", "message" => "Username or email already exists"]);
+    } elseif (strlen($password) < 8 || !preg_match('/[A-Z]/', $password) || !preg_match('/[0-9]/', $password) || !preg_match('/[!@#$%^&*(),.?":{}|<>]/', $password)) {
+
+        echo json_encode(["status" => "error", "message" => "Password should be at least 8 characters long and contain at least one uppercase letter, one number, and one special character"]);
     } else {
-        // Insert new user
-        $insertQuery = "INSERT INTO users (username, email, password) VALUES ('$username', '$email', '$password')";
+
+        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+
+
+        $insertQuery = "INSERT INTO users (username, email, password) VALUES ('$username', '$email', '$hashedPassword')";
         $insertResult = $conn->query($insertQuery);
 
         if ($insertResult) {
-            // Registration successful
+
             echo json_encode(["status" => "success", "message" => "Registration successful"]);
         } else {
-            // Registration failed
+
             echo json_encode(["status" => "error", "message" => "Registration failed"]);
         }
     }
 
     CloseCon($conn);
 } else {
-    // Handle invalid request method
+
     echo json_encode(["status" => "error", "message" => "Invalid request method"]);
 }
 ?>

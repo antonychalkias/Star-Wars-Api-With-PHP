@@ -1,11 +1,16 @@
 <?php
-// Assuming you have a POST request with 'logout' parameter
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
-    // Perform any necessary logout actions (e.g., destroy session)
+session_start();
 
-    echo json_encode(["status" => "success", "message" => "Logout successful"]);
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
+
+    if (isset($_SESSION['user_id'])) {
+        session_destroy();
+        echo json_encode(["status" => "success", "redirect" => "../../frontend/homepage.html"]);
+        exit;
+    } else {
+        echo json_encode(["status" => "error", "message" => "User not logged in"]);
+    }
 } else {
-    // Handle invalid request method or missing parameters
     echo json_encode(["status" => "error", "message" => "Invalid request"]);
 }
 ?>

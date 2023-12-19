@@ -5,8 +5,8 @@ require_once('../db/db_connection.php');
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $conn = OpenCon();
 
-    $username = $conn->real_escape_string($_POST['username']);
-    $password = $conn->real_escape_string($_POST['password']);
+    $username = $conn->real_escape_string($_POST['loginUsername']);
+    $password = $conn->real_escape_string($_POST['loginPassword']);
 
     $sql = "SELECT * FROM users WHERE username='$username'";
     $result = $conn->query($sql);

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="../assets/planet.png" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../css/navbar.css" />
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.js"
+      integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+    <script src="./dashboard.js"></script>
+
+    <title>Dashboard</title>
+
+    <script>
+      $(document).ready(function () {
+        $.ajax({
+          type: "POST",
+          url: "../../backend/api/check_login.php",
+          dataType: "json",
+          success: function (response) {
+            if (response.status !== "success") {
+              // Show the login modal
+              $("#loginModal").modal("show");
+    
+              // Redirect when the modal is closed
+              $("#loginModal").on("hidden.bs.modal", function () {
+                window.location.href = "../homepage.html";
+              });
+            }
+          },
+          error: function () {
+            console.log("Error checking login status.");
+          },
+        });
+      });
+    </script>
+
+  </head>
+  <body>
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="loginModalLabel">Login Required</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>You must be logged in to use the dashboard.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <a href="../homepage.html" class="btn btn-primary">Go to Homepage</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <nav class="navbar navbar-expand-lg navbar-bg-dark bg-dark">
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link text-white" href="../homepage.html">
+              <img alt="Home" class="image-cont" src="../assets/planet.png" />
+            </a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link text-white" href="#" id="logoutBtn">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container mt-4" style="min-width: 900px;">
+        <div class="row justify-content-center">
+          <div class="col-md-10">
+  
+            <div class="align-content-center " >
+              <table id="apiPlanetTable" class="table table-bordered table-dark">
+                  <h1 class="mt-4">Planets from External API</h1>
+                  <div style="display: flex;
+                  flex-wrap: nowrap;
+                  flex-direction: row;
+                  justify-content: space-between;
+                  margin-bottom: 5px;">
+                      <button
+                      type="button"
+                      class="btn btn-success float-left mt-2"
+                      data-toggle="modal"
+                      data-target="#addPlanetModal"
+                    >
+                      Add Planet
+                    </button>
+              
+                    
+                    <button
+                      type="button"
+                      class="btn btn-success float-right mt-2"
+                      data-toggle="modal"
+                      data-target="#displayDbPlanetsModal"
+                    >
+                      Display Database Planets
+                    </button>
+                  </div>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Rotation Period</th>
+              <th>Orbital Period</th>
+              <th>Diameter</th>
+              <th>Climate</th>
+              <th>Gravity</th>
+            </tr>
+          </thead>
+          <tbody>
+
+          </tbody>
+        </table>
+      </div>
+
+
+
+
+<div class="modal fade" id="addPlanetModal" tabindex="-1" role="dialog" aria-labelledby="addPlanetModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addPlanetModalLabel">Add Planet</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                
+                <form id="addPlanetForm">
+                    <div class="form-group">
+                        <label for="planetName">Planet Name:</label>
+                        <input type="text" class="form-control" id="planetName" name="planetName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="rotationPeriod">Rotation Period:</label>
+                        <input type="text" class="form-control" id="rotationPeriod" name="rotationPeriod" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="orbitalPeriod">Orbital Period:</label>
+                        <input type="text" class="form-control" id="orbitalPeriod" name="orbitalPeriod" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="diameter">Diameter:</label>
+                        <input type="text" class="form-control" id="diameter" name="diameter" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="climate">Climate:</label>
+                        <input type="text" class="form-control" id="climate" name="climate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="gravity">Gravity:</label>
+                        <input type="text" class="form-control" id="gravity" name="gravity" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Add Planet</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+      <div
+        class="modal fade"
+        id="displayDbPlanetsModal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="displayDbPlanetsModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="displayDbPlanetsModalLabel">
+                Database Planets
+              </h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="table-responsive">
+                <table id="dbPlanetTable" class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Rotation Period</th>
+                      <th>Orbital Period</th>
+                      <th>Diameter</th>
+                      <th>Climate</th>
+                      <th>Gravity</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
